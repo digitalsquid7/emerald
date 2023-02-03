@@ -27,6 +27,8 @@ class EmailConfigRetriever(ConfigRetriever):
         return EmailConfig(
             self.__config_parser.get("email", "host"),
             self.__config_parser.getint("email", "port"),
+            self.__config_parser.get("email", "from_address"),
+            self.__config_parser.get("email", "use_ssl"),
         )
 
 

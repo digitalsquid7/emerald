@@ -25,6 +25,12 @@ docker run --name test-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw MYSQL_DATABASE=
 docker exec -it test-mysql mysql -p
 ```
 
+### Test email server
+
+```bash
+
+```
+
 ## Design logo
 
 https://www.adobe.com/express/create/logo
