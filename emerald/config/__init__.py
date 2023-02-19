@@ -1,2 +1,2 @@
-from .model import *
+from .dataclass import *
 from .retriever import *

@@ -10,7 +10,7 @@ Helpful MySQL Docker resource: https://earthly.dev/blog/docker-mysql/
 ### Create the database
 
 ```bash
-docker run --name test-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw MYSQL_DATABASE=emerald -d -p 3306:3306 mysql:latest
+docker run --name test-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -e MYSQL_DATABASE=emerald --network=bridge -d -p 3306:3306 mysql:latest
 ```
 
 - `--name test-mysql` name of the docker container
@@ -28,7 +28,7 @@ docker exec -it test-mysql mysql -p
 ### Test email server
 
 ```bash
-
+python -m smtpd -c DebuggingServer -n 127.0.0.1:1025
 ```
 
 ## Design logo

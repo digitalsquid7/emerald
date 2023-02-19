@@ -1,7 +1,12 @@
-from configparser import ConfigParser
+import os
 
 
-def create_config_parser(config_file_path) -> ConfigParser:
-    config_parser = ConfigParser()
-    config_parser.read(config_file_path)
-    return config_parser
+class EnvironmentVariableRetriever:
+    @staticmethod
+    def retrieve(name: str):
+        env_var = os.getenv(name)
+
+        if env_var is None:
+            raise Exception(f"required environment variable not set: {name}")
+
+        return env_var

@@ -7,6 +7,10 @@ name = "pypi"
 jinja2 = "*"
 sqlalchemy = "*"
 alembic = "*"
+mysql = "*"
+mysqlclient = "*"
+psycopg2-binary = "*"
+psycopg2 = "*"
 
 [dev-packages]
 
