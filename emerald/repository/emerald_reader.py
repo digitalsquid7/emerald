@@ -57,9 +57,4 @@ class EmeraldRepositoryReader:
         return email_requests
 
     def __create_email_request(self, row) -> EmailRequest:
-        return EmailRequest(
-            row[0],
-            row[4],
-            row[2],
-            self.__email_body_generator.generate(row[2], row[3]),
-        )
+        return EmailRequest(row[0], row[4], row[2], self.__email_body_generator.generate(row[2], row[3]))

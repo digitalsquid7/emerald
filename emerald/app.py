@@ -18,8 +18,8 @@ class Emerald:
         self.__logger = logger
 
     def run(self):
-        self.__logger.info(f"Emerald execution started at {datetime.now()}")
         try:
+            self.__logger.info(f"Emerald execution started at {datetime.now()}")
             self.__try_to_run()
         except Exception as exc:
             self.__logger.error("Exception occurred during execution...", exc_info=exc)
