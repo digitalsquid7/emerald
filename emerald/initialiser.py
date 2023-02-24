@@ -1,8 +1,7 @@
 import logging.config
-from logging import Logger
 from configparser import ConfigParser
 from datetime import datetime
-from smtplib import SMTP
+from logging import Logger
 
 from jinja2 import Environment, select_autoescape, FileSystemLoader
 from sqlalchemy import create_engine
@@ -11,7 +10,7 @@ from emerald.app import Emerald
 from emerald.config import ConfigRetriever, Config
 from emerald.email.body import EmailBodyGenerator
 from emerald.email.sender import EmailSender
-from emerald.repository import EmeraldRepositoryReader
+from emerald.repository import EmeraldRepositoryReader, EmeraldRepositoryUpdater
 from emerald.sql import TableFactory
 from emerald.util import EnvironmentVariableRetriever
 
@@ -40,8 +39,11 @@ class Initialiser:
     @classmethod
     def __try_to_initialise(cls, logger: Logger) -> Emerald:
         config = cls.create_config()
-        emerald_repository_reader = cls.__create_emerald_repository_reader(config, logger)
-        email_sender = cls.__create_email_sender(config, logger)
+        engine = create_engine(config.database.connection_string)
+        table_factory = TableFactory()
+        emerald_repository_reader = cls.__create_emerald_repository_reader(engine, table_factory, config, logger)
+        emerald_repository_updater = EmeraldRepositoryUpdater(engine, table_factory, logger)
+        email_sender = EmailSender(config.email, emerald_repository_updater, logger)
         return Emerald(emerald_repository_reader, email_sender, logger)
 
     @classmethod
@@ -52,16 +54,11 @@ class Initialiser:
         return ConfigRetriever.retrieve(config_parser)
 
     @classmethod
-    def __create_emerald_repository_reader(cls, config, logger) -> EmeraldRepositoryReader:
-        engine = create_engine(config.database.connection_string)
-        table_factory = TableFactory()
+    def __create_emerald_repository_reader(cls, engine, factory, config, logger) -> EmeraldRepositoryReader:
         template_loader = FileSystemLoader(config.asset.html_path)
         env = Environment(loader=template_loader, autoescape=select_autoescape())
         template = env.get_template(config.asset.notification_file)
         email_body_generator = EmailBodyGenerator(template, config.asset.html_path)
-        return EmeraldRepositoryReader(engine, table_factory, email_body_generator, logger)
+        return EmeraldRepositoryReader(engine, factory, email_body_generator, logger)
 
-    @classmethod
-    def __create_email_sender(cls, config, logger) -> EmailSender:
-        smtp_server = SMTP(config.email.host, config.email.port)
-        return EmailSender(config.email, smtp_server, logger)
+

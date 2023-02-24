@@ -1,4 +1,5 @@
 from logging import Logger
+
 from sqlalchemy import Engine, select, Select
 
 from emerald.email.body import EmailBodyGenerator
