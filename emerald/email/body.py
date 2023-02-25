@@ -11,7 +11,6 @@ class EmailBodyGenerator:
         self.__html_bodies = {}
 
     def generate(self, title: str, body_file_name: str) -> str:
-
         html_body = self.__html_bodies.get(body_file_name)
 
         if html_body is None:

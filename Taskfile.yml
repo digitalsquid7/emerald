@@ -1,0 +1,29 @@
+version: '3'
+
+tasks:
+  start-postgres:
+    desc: spinup a postgres docker container containg the emerald db
+    cmds:
+      - docker rm -f postgres
+      - docker run -d --rm --name postgres --network=bridge -p 5432:5432 -e POSTGRES_DB=emerald -e POSTGRES_USER=test -e POSTGRES_PASSWORD=test postgres:latest
+
+  start-smtp4dev:
+    desc: start a fake email server for development
+    cmds:
+      - docker rm -f smtp4dev
+      - docker run --rm -d --name smtp4dev -p 3000:80 -p 26:25 rnwood/smtp4dev:v3
+
+  upgrade-database:
+    desc: upgrade the emerald database schema to the latest alembic version
+    cmds:
+      - alembic upgrade head
+    env:
+      EMERALD_CONFIG_PATH: emerald.ini
+
+  insert-test-data:
+    desc: insert test data in the emerald database
+    cmds:
+      - python -m develop.insert_test_data
+    env:
+      EMERALD_CONFIG_PATH: emerald.ini
+      EMERALD_LOGGER_CONFIG_PATH: logger.ini
