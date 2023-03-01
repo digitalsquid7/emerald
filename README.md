@@ -1,39 +1,40 @@
 # Emerald
 
-Emerald generates and sends emails
+Emerald retrieves emails that need to be sent from a database, generates the HTML for each email, then sends the emails.
 
-## Setup a MySQL Docker container
+## Run Locally
 
-Official MySQL Docker resource: https://hub.docker.com/_/mysql \
-Helpful MySQL Docker resource: https://earthly.dev/blog/docker-mysql/
+Prerequisites
 
-### Create the database
+- [Python 3.9](https://www.python.org/downloads/release/python-390/)
+- [Docker](https://www.docker.com/products/docker-desktop/)
+- [Task](https://taskfile.dev/installation/)
 
-```bash
-docker run --name test-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -e MYSQL_DATABASE=emerald --network=bridge -d -p 3306:3306 mysql:latest
-```
+1. Clone the repository
 
-- `--name test-mysql` name of the docker container
-- `-e MYSQL_ROOT_PASSWORD=my-secret-pw` set environment variables
-- `-d` run as a background process
-- `-p 3306:3306` forward the port so the DB can be connected to outside the container (from localhost)
-- `mysql:latest` use the latest version of the official MySQL image 
+    ```bash
+    git clone https://github.com/digitalsquid7/emerald
+    ```
+   
+1. Change directory to the root emerald folder
 
-### Connect to the database
+    ```bash
+    cd emerald
+    ```
 
-```bash
-docker exec -it test-mysql mysql -p
-```
+1. Setup docker containers with the taskfile
 
-### Test email server
+    ```bash
+    task setup-containers
+    ```
 
-```bash
-python -m smtpd -c DebuggingServer -n 127.0.0.1:1025
-```
+1. Run main
 
-### Design logo
+    ```bash
+    python main.py
+    ```
 
+## Links
+
+Emerald logo designed with Adobe:
 https://www.adobe.com/express/create/logo
-
-### Taskfile
-https://taskfile.dev/

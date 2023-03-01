@@ -12,7 +12,7 @@ tasks:
       - task: insert-test-data
 
   start-postgres:
-    desc: spinup a postgres docker container containg the emerald db
+    desc: spinup a postgres docker container containing the emerald db
     cmds:
       - docker rm -f postgres
       - docker run -d --rm --name postgres --network=bridge -p 5432:5432 -e POSTGRES_DB=emerald -e POSTGRES_USER=test -e POSTGRES_PASSWORD=test postgres:latest
