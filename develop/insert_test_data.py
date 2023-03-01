@@ -2,7 +2,7 @@ from sqlalchemy import create_engine, insert
 from sqlalchemy import select, bindparam
 
 from emerald.initialiser import Initialiser
-from emerald.sql import TableFactory
+from emerald.repository.sql import TableFactory
 
 
 class TestDataInserter:

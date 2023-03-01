@@ -2,9 +2,10 @@ from dataclasses import dataclass
 
 
 @dataclass
-class EmailRequest:
+class EmailRequestData:
     identifier: int
     email_address: str
     subject: str
-    body: str
+    file_name: str
+    first_name: str
 

@@ -3,8 +3,8 @@ from logging import Logger
 
 from sqlalchemy import Engine, update
 
-from emerald.repository.dataclass import EmailRequest
-from emerald.sql import TableFactory
+from emerald.repository.dataclass import EmailRequestData
+from emerald.repository.sql import TableFactory
 
 
 class EmeraldRepositoryUpdater:
@@ -18,7 +18,7 @@ class EmeraldRepositoryUpdater:
         self.__table_factory = table_factory
         self.__logger = logger
 
-    def update_email_request_sent_datetime(self, email_request: EmailRequest):
+    def update_email_request_sent_datetime(self, email_request: EmailRequestData):
         email_request_table = self.__table_factory.create("email_request")
 
         statement = update(email_request_table)\

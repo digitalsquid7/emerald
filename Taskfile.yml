@@ -1,6 +1,16 @@
 version: '3'
 
+dotenv: ['.env']
+
 tasks:
+  setup-containers:
+    desc: start and configure docker containers needed for the development environment
+    cmds:
+      - task: start-postgres
+      - task: start-smtp4dev
+      - task: upgrade-database
+      - task: insert-test-data
+
   start-postgres:
     desc: spinup a postgres docker container containg the emerald db
     cmds:
@@ -17,13 +27,8 @@ tasks:
     desc: upgrade the emerald database schema to the latest alembic version
     cmds:
       - alembic upgrade head
-    env:
-      EMERALD_CONFIG_PATH: emerald.ini
 
   insert-test-data:
     desc: insert test data in the emerald database
     cmds:
       - python -m develop.insert_test_data
-    env:
-      EMERALD_CONFIG_PATH: emerald.ini
-      EMERALD_LOGGER_CONFIG_PATH: logger.ini

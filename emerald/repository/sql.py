@@ -4,6 +4,7 @@ from sqlalchemy import MetaData, Column, Integer, String, Table, DateTime
 class TableFactory:
     def __init__(self):
         meta = MetaData()
+
         self.__tables = {
             "email_request": Table(
                 "email_request", meta,
@@ -13,6 +14,7 @@ class TableFactory:
                 Column("created_datetime", DateTime),
                 Column("sent_datetime", DateTime),
             ),
+
             "email_type": Table(
                 "email_type", meta,
                 Column("id", Integer, primary_key=True),
@@ -20,6 +22,7 @@ class TableFactory:
                 Column("subject", String),
                 Column("file_name", String),
             ),
+
             "email_recipient": Table(
                 "email_recipient", meta,
                 Column("id", Integer, primary_key=True),

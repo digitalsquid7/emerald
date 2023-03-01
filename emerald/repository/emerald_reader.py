@@ -2,9 +2,8 @@ from logging import Logger
 
 from sqlalchemy import Engine, select, Select
 
-from emerald.email.body import EmailBodyGenerator
-from emerald.repository.dataclass import EmailRequest
-from emerald.sql import TableFactory
+from emerald.repository.dataclass import EmailRequestData
+from emerald.repository.sql import TableFactory
 
 
 class EmeraldRepositoryReader:
@@ -12,15 +11,13 @@ class EmeraldRepositoryReader:
             self,
             engine: Engine,
             table_factory: TableFactory,
-            email_body_generator: EmailBodyGenerator,
             logger: Logger,
     ):
         self.__engine = engine
         self.__table_factory = table_factory
-        self.__email_body_generator = email_body_generator
         self.__logger = logger
 
-    def read_email_requests(self) -> list[EmailRequest]:
+    def read_email_requests(self) -> list[EmailRequestData]:
         query = self.__create_email_requests_query()
 
         with self.__engine.connect() as conn:
@@ -47,15 +44,12 @@ class EmeraldRepositoryReader:
             .select_from(joins) \
             .filter(email_request.c.sent_datetime.is_(None))
 
-    def __create_email_requests(self, rows) -> list[EmailRequest]:
+    def __create_email_requests(self, rows) -> list[EmailRequestData]:
         email_requests = []
 
         for row in rows:
-            email_requests.append(self.__create_email_request(row))
+            email_requests.append(EmailRequestData(row[0], row[4], row[2], row[3], row[5]))
 
         self.__logger.info(f"Found {len(email_requests)} emails that need sending.")
 
         return email_requests
-
-    def __create_email_request(self, row) -> EmailRequest:
-        return EmailRequest(row[0], row[4], row[2], self.__email_body_generator.generate(row[2], row[3]))

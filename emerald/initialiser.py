@@ -3,22 +3,23 @@ from configparser import ConfigParser
 from datetime import datetime
 from logging import Logger
 
-from jinja2 import Environment, select_autoescape, FileSystemLoader
+from dotenv import load_dotenv
+from jinja2 import Environment, select_autoescape, FileSystemLoader, BaseLoader
 from sqlalchemy import create_engine
 
 from emerald.app import Emerald
-from emerald.config import ConfigRetriever, Config
-from emerald.email.body import EmailBodyGenerator
+from emerald.config import ConfigRetriever, Config, PathRetriever
+from emerald.email import EmailGenerator
 from emerald.email.sender import EmailSender
 from emerald.repository import EmeraldRepositoryReader, EmeraldRepositoryUpdater
-from emerald.sql import TableFactory
-from emerald.util import EnvironmentVariableRetriever
+from emerald.repository.sql import TableFactory
 
 
 class Initialiser:
 
     @classmethod
     def initialise(cls) -> Emerald:
+        load_dotenv()
         logger = cls.__create_logger()
         logger.info(f"Emerald initialisation started at {datetime.now()}")
 
@@ -32,7 +33,7 @@ class Initialiser:
 
     @classmethod
     def __create_logger(cls) -> Logger:
-        logger_config_path = EnvironmentVariableRetriever.retrieve("EMERALD_LOGGER_CONFIG_PATH")
+        logger_config_path = PathRetriever.get_logger_path()
         logging.config.fileConfig(fname=logger_config_path, disable_existing_loggers=False)
         return logging.getLogger("root")
 
@@ -41,24 +42,18 @@ class Initialiser:
         config = cls.create_config()
         engine = create_engine(config.database.connection_string)
         table_factory = TableFactory()
-        emerald_repository_reader = cls.__create_emerald_repository_reader(engine, table_factory, config, logger)
         emerald_repository_updater = EmeraldRepositoryUpdater(engine, table_factory, logger)
         email_sender = EmailSender(config.email, emerald_repository_updater, logger)
-        return Emerald(emerald_repository_reader, email_sender, logger)
+        base_env = Environment(loader=BaseLoader(), autoescape=select_autoescape())
+        file_env = Environment(loader=FileSystemLoader(config.asset.html_path), autoescape=select_autoescape())
+        notification_template = file_env.get_template(config.asset.notification_file)
+        email_generator = EmailGenerator(notification_template, base_env, config.asset, config.email)
+        emerald_repository_reader = EmeraldRepositoryReader(engine, table_factory, logger)
+        return Emerald(emerald_repository_reader, email_generator, email_sender, logger)
 
     @classmethod
     def create_config(cls) -> Config:
-        config_path = EnvironmentVariableRetriever.retrieve("EMERALD_CONFIG_PATH")
+        config_path = PathRetriever.get_emerald_path()
         config_parser = ConfigParser()
         config_parser.read(config_path)
         return ConfigRetriever.retrieve(config_parser)
-
-    @classmethod
-    def __create_emerald_repository_reader(cls, engine, factory, config, logger) -> EmeraldRepositoryReader:
-        template_loader = FileSystemLoader(config.asset.html_path)
-        env = Environment(loader=template_loader, autoescape=select_autoescape())
-        template = env.get_template(config.asset.notification_file)
-        email_body_generator = EmailBodyGenerator(template, config.asset.html_path)
-        return EmeraldRepositoryReader(engine, factory, email_body_generator, logger)
-
-
