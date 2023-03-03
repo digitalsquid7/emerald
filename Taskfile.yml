@@ -26,7 +26,7 @@ tasks:
   install-python-dependencies:
     desc: install python dependencies with pipenv
     cmds:
-      - python3.11 -m pipenv install
+      - python3.11 -m pipenv install --dev
 
   upgrade-database:
     desc: upgrade the emerald database schema to the latest alembic version

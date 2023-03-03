@@ -39,7 +39,7 @@ class Initialiser:
 
     @classmethod
     def __try_to_initialise(cls, logger: Logger) -> Emerald:
-        config = cls.__create_config()
+        config = cls.create_config()
         engine = create_engine(config.database.connection_string)
         table_factory = TableFactory()
         emerald_repository_updater = EmeraldRepositoryUpdater(engine, table_factory, logger)
@@ -52,7 +52,7 @@ class Initialiser:
         return Emerald(emerald_repository_reader, email_generator, email_sender, logger)
 
     @classmethod
-    def __create_config(cls) -> Config:
+    def create_config(cls) -> Config:
         config_path = PathRetriever.get_emerald_path()
         config_parser = ConfigParser()
         config_parser.read(config_path)

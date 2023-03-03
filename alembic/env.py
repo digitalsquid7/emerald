@@ -1,11 +1,10 @@
-from configparser import ConfigParser
 from logging.config import fileConfig
 
 from alembic import context
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
-from emerald.config import PathRetriever, ConfigRetriever
+from emerald.initialiser import Initialiser
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -16,10 +15,7 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-config_path = PathRetriever.get_emerald_path()
-config_parser = ConfigParser()
-config_parser.read(config_path)
-emerald_config = ConfigRetriever.retrieve(config_parser)
+emerald_config = Initialiser.create_config()
 config.set_main_option('sqlalchemy.url', emerald_config.database.connection_string)
 
 # add your model's MetaData object here
