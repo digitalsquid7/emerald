@@ -6,14 +6,12 @@ name = "pypi"
 [packages]
 jinja2 = "*"
 sqlalchemy = "*"
-alembic = "*"
-mysql = "*"
-mysqlclient = "*"
 psycopg2-binary = "*"
 psycopg2 = "*"
 python-dotenv = "*"
+alembic = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.9"
+python_version = "3.11"

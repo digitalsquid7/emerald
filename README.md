@@ -6,9 +6,10 @@ Emerald retrieves emails that need to be sent from a database, generates the HTM
 
 Prerequisites
 
-- [Python 3.9](https://www.python.org/downloads/release/python-390/)
+- [Python 3.11](https://www.python.org/downloads/release/python-3110/)
+- [Pipenv](https://pypi.org/project/pipenv/)
 - [Docker](https://www.docker.com/products/docker-desktop/)
-- [Task](https://taskfile.dev/installation/)
+- [Taskfile](https://taskfile.dev/installation/)
 
 1. Clone the repository
 
@@ -22,10 +23,16 @@ Prerequisites
     cd emerald
     ```
 
+1. Install Python dependencies with Pipenv
+
+   ```bash
+   task install-python-dependencies
+   ```
+
 1. Setup docker containers with the taskfile
 
     ```bash
-    task setup-containers
+    task setup
     ```
 
 1. Run main

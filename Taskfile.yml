@@ -3,7 +3,7 @@ version: '3'
 dotenv: ['.env']
 
 tasks:
-  setup-containers:
+  setup:
     desc: start and configure docker containers needed for the development environment
     cmds:
       - task: start-postgres
@@ -23,12 +23,17 @@ tasks:
       - docker rm -f smtp4dev
       - docker run --rm -d --name smtp4dev -p 3000:80 -p 26:25 rnwood/smtp4dev:v3
 
+  install-python-dependencies:
+    desc: install python dependencies with pipenv
+    cmds:
+      - python3.11 -m pipenv install
+
   upgrade-database:
     desc: upgrade the emerald database schema to the latest alembic version
     cmds:
-      - alembic upgrade head
+      - python3.11 -m pipenv run python -m alembic upgrade head
 
   insert-test-data:
     desc: insert test data in the emerald database
     cmds:
-      - python -m develop.insert_test_data
+      - python3.11 -m pipenv run python -m develop.insert_test_data
