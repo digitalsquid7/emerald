@@ -20,6 +20,8 @@ class TestEmailSender(unittest.TestCase):
 
         email_sender.send_emails(emails)
 
+        raise Exception("test")
+
         context = mock_smtp.return_value.__enter__.return_value
         context.sendmail.assert_called_once()
         repository_updater.update_email_request_sent_datetime.assert_called_once()
