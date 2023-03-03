@@ -1,6 +1,9 @@
 name: run-tests
-run-name: ${{ github.actor }} is learning GitHub Actions
-on: [push]
+run-name: Run unit tests
+on:
+  pull_request:
+    branches:
+      - master
 jobs:
   check-bats-version:
     runs-on: ubuntu-latest
