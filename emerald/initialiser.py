@@ -21,7 +21,7 @@ class Initialiser:
     def initialise(cls) -> Emerald:
         load_dotenv()
         logger = cls.__create_logger()
-        logger.info(f"Emerald initialisation started at {datetime.now()}")
+        logger.info("Emerald initialisation started at %s", datetime.now())
 
         try:
             return cls.__try_to_initialise(logger)
@@ -29,7 +29,7 @@ class Initialiser:
             logger.error("Exception occurred during initialisation...", exc_info=exc)
             raise
         finally:
-            logger.info(f"Emerald initialisation finished at {datetime.now()}")
+            logger.info("Emerald initialisation finished at %s", datetime.now())
 
     @classmethod
     def __create_logger(cls) -> Logger:
@@ -39,10 +39,10 @@ class Initialiser:
 
     @classmethod
     def __try_to_initialise(cls, logger: Logger) -> Emerald:
-        config = cls.__create_config()
+        config = cls.create_config()
         engine = create_engine(config.database.connection_string)
         table_factory = TableFactory()
-        emerald_repository_updater = EmeraldRepositoryUpdater(engine, table_factory, logger)
+        emerald_repository_updater = EmeraldRepositoryUpdater(engine, table_factory)
         email_sender = EmailSender(config.email, emerald_repository_updater, logger)
         base_env = Environment(loader=BaseLoader(), autoescape=select_autoescape())
         file_env = Environment(loader=FileSystemLoader(config.asset.html_path), autoescape=select_autoescape())
@@ -52,7 +52,7 @@ class Initialiser:
         return Emerald(emerald_repository_reader, email_generator, email_sender, logger)
 
     @classmethod
-    def __create_config(cls) -> Config:
+    def create_config(cls) -> Config:
         config_path = PathRetriever.get_emerald_path()
         config_parser = ConfigParser()
         config_parser.read(config_path)

@@ -37,7 +37,7 @@ class EmailGenerator:
         html_body = self.__html_bodies.get(email_request.file_name)
 
         if html_body is None:
-            with open(os.path.join(self.__asset_config.html_path, email_request.file_name)) as file:
+            with open(os.path.join(self.__asset_config.html_path, email_request.file_name), encoding="utf-8") as file:
                 html_body = file.read()
 
             self.__html_bodies[email_request.file_name] = html_body

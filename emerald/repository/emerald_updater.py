@@ -1,5 +1,4 @@
 from datetime import datetime
-from logging import Logger
 
 from sqlalchemy import Engine, update
 
@@ -12,11 +11,9 @@ class EmeraldRepositoryUpdater:
             self,
             engine: Engine,
             table_factory: TableFactory,
-            logger: Logger,
     ):
         self.__engine = engine
         self.__table_factory = table_factory
-        self.__logger = logger
 
     def update_email_request_sent_datetime(self, email_request: EmailRequestData):
         email_request_table = self.__table_factory.create("email_request")

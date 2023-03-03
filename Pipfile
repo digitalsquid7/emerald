@@ -9,9 +9,10 @@ sqlalchemy = "*"
 psycopg2-binary = "*"
 psycopg2 = "*"
 python-dotenv = "*"
-alembic = "*"
 
 [dev-packages]
+alembic = "*"
+pylint = "*"
 
 [requires]
 python_version = "3.11"

@@ -4,25 +4,14 @@ from configparser import ConfigParser
 from emerald.config.dataclass import EmailConfig, Config, DatabaseConfig, AssetConfig
 
 
-class EnvVarRetriever:
-    @staticmethod
-    def retrieve(name: str):
-        env_var = os.getenv(name)
-
-        if env_var is None:
-            raise Exception(f"required environment variable not set: {name}")
-
-        return env_var
-
-
 class PathRetriever:
     @staticmethod
     def get_emerald_path() -> str:
-        return EnvVarRetriever.retrieve("EMERALD_CONFIG_PATH")
+        return os.environ["EMERALD_CONFIG_PATH"]
 
     @staticmethod
     def get_logger_path() -> str:
-        return EnvVarRetriever.retrieve("EMERALD_LOGGER_CONFIG_PATH")
+        return os.environ["EMERALD_LOGGER_CONFIG_PATH"]
 
 
 class ConfigRetriever:

@@ -1,0 +1,51 @@
+name: ci-pipeline
+run-name: CI Pipeline
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pipenv
+          python -m pipenv install
+      - name: Run tests
+        run: python -m pipenv run python -m unittest discover test
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pipenv
+          python -m pipenv install --dev
+      - name: Lint
+        run: python -m pipenv run python -m pylint --disable=C,R emerald
+
+  code-vulnerability-scanner:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install bandit
+      - name: Scan for vulnerabilities
+        run: python -m bandit -r emerald
