@@ -40,5 +40,5 @@ notification_file = notification.html
 
         actual_config = ConfigRetriever.retrieve(config_parser)
 
-        self.assertEqual(expected_config, 1)
+        self.assertEqual(expected_config, actual_config)
 
